@@ -2,6 +2,7 @@ const mysqlConnection = require('../connection_db');
 
 module.exports = {
 
+//Funcion que registra un nuevo viaje
   newTravel:  (req, res, next) => {
     const travel = req.body;
     mysqlConnection.query('select id_usuario from usuario where id_usuario=4', (err,rows,fields) => {
@@ -23,6 +24,7 @@ module.exports = {
     });
   },
 
+//Funcion que muestra los viajes que han sido registrados
   showTravel: async (req, res, next) => {
     await mysqlConnection.query('SELECT * FROM viaje', (err, rows, fields) => {
       if(!err){
