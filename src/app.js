@@ -3,6 +3,7 @@ const morgan = require('morgan');
 const app = express();
 const usersRoutes = require('./routers/user');
 const travelerRoutes = require('./routers/travelers');
+const travelRoutes = require('./routers/travel');
 
 
 //Settings
@@ -16,6 +17,7 @@ app.use(express.json());
 //Routes
 app.use('/users', usersRoutes);
 app.use('/travelers', travelerRoutes);
+app.use('/travel', travelRoutes);
 
 
 //Staring Server
