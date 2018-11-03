@@ -3,6 +3,7 @@ const morgan = require('morgan');
 const app = express();
 const usersRoutes = require('./routers/user');
 const travelerRoutes = require('./routers/travelers');
+const isAuth = require('./middlewares/auth');
 
 
 //Settings
@@ -16,6 +17,14 @@ app.use(express.json());
 //Routes
 app.use('/users', usersRoutes);
 app.use('/travelers', travelerRoutes);
+
+/*Ejemplo de como utilizar rutas privas solo accedidas por usuarios registrados
+con tokens*/
+app.get('/private',isAuth,(req,res)=>{
+  res.status(200).send({message: "Tienes Acceso"})
+});//
+
+
 
 
 //Staring Server

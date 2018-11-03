@@ -1,11 +1,14 @@
 const router = require('express-promise-router')();
+const isSignUp = require('../middlewares/user');
 
 const {
   showTraveler,
-  newTraveler
+  singUp,
+  signIn
 } = require('../controllers/traveler');
 
 router.get('/',showTraveler);
-router.post('/',newTraveler);
+router.post('/',isSignUp,singUp);
+router.post('/login',signIn);
 
 module.exports = router;
