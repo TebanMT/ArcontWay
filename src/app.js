@@ -3,7 +3,11 @@ const morgan = require('morgan');
 const app = express();
 const usersRoutes = require('./routers/user');
 const travelerRoutes = require('./routers/travelers');
+<<<<<<< HEAD
 const isAuth = require('./middlewares/auth');
+=======
+const travelRoutes = require('./routers/travel');
+>>>>>>> ae6ca271476c9ddfa24707ac618dd3502658b9d7
 
 
 //Settings
@@ -17,6 +21,7 @@ app.use(express.json());
 //Routes
 app.use('/users', usersRoutes);
 app.use('/travelers', travelerRoutes);
+app.use('/travel', travelRoutes);
 
 /*Ejemplo de como utilizar rutas privas solo accedidas por usuarios registrados
 con tokens*/
