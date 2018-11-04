@@ -32,7 +32,7 @@ module.exports = {
               if (!err) {
                 res.status(200).send({
                   "success" : true,
-                  "message" : "Registro Exitoso",
+                  "message" : "Registro E xitoso",
                   "token" : service.createToken(user)//creamos el token con el que se identificara al nuevo viajero(usuario)
                 }); 
               }

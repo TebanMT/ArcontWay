@@ -2,27 +2,24 @@ const mysqlConnection = require('../connection_db');
 
 /*Funcion que verifica si el usuario ya existe en la bd
 antes de ser registrado*/
-function verifyUser(email){
+function verifyUser(email,numberPhone){
     const verify = new Promise((resolve, reject) =>{
         try{
-            mysqlConnection.query("SELECT email FROM usuario WHERE email=?",[email],(rows,error)=>{
-                if(!error){
-                    
-                    console.log(rows);
-                    if(rows!=0){
-                        resolve({
-                            success: true
-                        });
+            mysqlConnection.query("SELECT email,telefono FROM usuario WHERE email=? OR telefono=?",[email,numberPhone],(err,rows)=>{
+                if(!err){
+                    if(rows.length == 0){
+                         resolve({status: true,message: "Correcto"});
+                    }else{
+                        if(rows[0]['email']==email){
+                            resolve({status: false,message: "El Email ya se encuentra registrado"});
+                        }else{
+                            resolve({status: false,message: "El Telefono ya se encuentra registrado"});
+                        }     
                     }
                 }
-                console.log(error);
             });
-            
         }catch(err){
-            reject({
-                status: 500,
-                message: "Token Incorrecto"
-            })
+            reject({status: 500,message: "Error del servidor"})
         }
     })
     return verify;
