@@ -22,17 +22,17 @@ module.exports = {
   //Funcion que registra un nuevo usuario que a la vez sera un viajero
   singUp:  (req, res, next) => {
     const user = req.body;
-    user.id_usuario=uuidv4();
+    user.id_user=uuidv4();
     bcrypt.hash(user.password, BCRYPT_SALT_ROUNDS) //promesa para encriptar la contraseña
     .then(hashedPassword => { // success
       mysqlConnection.query('INSERT INTO usuario VALUES (?,?,?,?,?,?,?,?,?,?,?)',
-      [user.id_usuario,user.nombre,user.apellido_p,user.apellido_m,user.lada_nacional,user.telefono,user.email,hashedPassword,user.tarjeta,user.tipo_tarjeta,user.puntos], (err, rows, fields) => {
+      [user.id_user,user.name,user.lastname,user.second_lastname,user.lada,user.number_phone,user.email,hashedPassword,user.card,user.type_card,user.points], (err, rows, fields) => {
         if(!err){
-            mysqlConnection.query('INSERT INTO viajero VALUES(?,?,?)',[user.viajero,user.total_viajes,user.id_usuario],(err,rows,fields) => {
+            mysqlConnection.query('INSERT INTO viajero VALUES(?,?,?)',[user.viajero,user.total_trips,user.id_user],(err,rows,fields) => {
               if (!err) {
                 res.status(200).send({
                   "success" : true,
-                  "message" : "Registro E xitoso",
+                  "message" : "Registro Exitoso",
                   "token" : service.createToken(user)//creamos el token con el que se identificara al nuevo viajero(usuario)
                 }); 
               }
@@ -64,13 +64,21 @@ module.exports = {
   //Funcion que proporciona acceso a un viajero previamente registrado --Login--
   signIn: (req,res)=>{
     const user = req.body;
-    mysqlConnection.query("SELECT u.*,t.* FROM usuario as u INNER JOIN viajero as t ON u.id_usuario=t.id_usuario WHERE u.email=? AND u.password=?",
-    [user.email,user.password],(err, rows)=>{
+    mysqlConnection.query("SELECT u.*,t.* FROM usuario as u INNER JOIN viajero as t ON u.id_usuario=t.id_usuario WHERE u.email=? ",
+    [user.email],(err, rows)=>{
         if(!err){
             if(rows != 0){
-                res.status(200).send({success: true,message: "Te has logueado correctamente", token: service.createToken(user)})
-            }else res.status(404).send({message: "El usuario no existe"})           
-        }else res.status(500).send({message: err})
+              bcrypt.compare(user.password,rows[0]['password'])
+              .then(password =>{
+                if(password)
+                  return res.status(200).send({success: true,message: "Te has logueado correctamente", token: service.createToken(user)});
+                res.status(403).send({success: false, message: "Contraseña Incorrecta"});
+              })
+              .catch(err =>{
+                res.status(500).send({success: false, message: err});
+              })
+            }else res.status(403).send({message: "Email no se encuatra registrado"})           
+        }else res.status(500).send({success: false,message: err})
     });
     
   }//

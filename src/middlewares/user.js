@@ -4,7 +4,7 @@ const service = require('../services/users');
 registrado con email y telefono*/
 function isSignUp(req,res,next){
     const user = req.body;
-    service.verifyUser(user.email,user.telefono)
+    service.verifyUser(user.email,user.number_phone)
         .then(responde => {
             if(responde.status == false){return res.status(200).send({message: responde.message});}
             next();

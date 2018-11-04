@@ -4,7 +4,7 @@ const app = express();
 const usersRoutes = require('./routers/user');
 const travelerRoutes = require('./routers/travelers');
 const isAuth = require('./middlewares/auth');
-const travelRoutes = require('./routers/travel');
+const travelRoutes = require('./routers/trip');
 
 
 //Settings
