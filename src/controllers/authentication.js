@@ -12,16 +12,16 @@ function loadLogin() {
 
 module.exports = {
     
-    
     showDataAccountKit: async (req, res, next) => {
+        
         csrf_guid = guid.raw();
         var view = { 
             appId: config.APP_ID, 
             csrf: csrf_guid, 
-            version: config.ACCOUNT_KIT_API_VERSION 
+            version: config.ACCOUNT_KIT_API_VERSION
         };
 
-        var html = Mustache.to_html(loadLogin(), view);
+        //var html = Mustache.to_html(loadLogin(), view);
         res.status(200).send(view);
         
     },

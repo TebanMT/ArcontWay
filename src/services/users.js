@@ -25,4 +25,8 @@ function verifyUser(email,numberPhone){
     return verify;
 }
 
+function generateId(name, last_name, login) {
+    id =""+login+""+name.substring(0,2)+""+last_name.substring(0,3)+""+Math.floor(Math.random() * (1000001 - 1)) + 1;;
+    return id;
+}
 module.exports = {verifyUser}
