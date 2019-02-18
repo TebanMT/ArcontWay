@@ -2,10 +2,10 @@ const router = require('express-promise-router')();
 
 const {
   showUser,
-  signUpByNumberPhone
+  isSignUpTraveler
 } = require('../controllers/user');
 
 router.get('/',showUser);
-router.post('/',signUpByNumberPhone);
+router.get('/traveler',isSignUpTraveler);
 
 module.exports = router;

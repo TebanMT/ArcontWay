@@ -1,7 +1,9 @@
-const service = require('../services/users');
+/*const service = require('../services/users');
 
-/*Funcion que verifica si un usuario ya ha sido previamente
-registrado con email y telefono*/
+MODULO DEPRECIADO
+
+Funcion que verifica si un usuario ya ha sido previamente
+registrado con email y telefono
 function isSignUp(req,res,next){
     const user = req.body;
     service.verifyUser(user.email,user.number_phone)
@@ -15,4 +17,4 @@ function isSignUp(req,res,next){
 
    
 }
-module.exports = isSignUp
+module.exports = isSignUp*/

@@ -1,8 +1,10 @@
 const mysqlConnection = require('../connection_db');
 const service = require('../services/token');
-const uuidv4 = require('uuid/v4');
 const bcrypt = require('bcrypt');
-const BCRYPT_SALT_ROUNDS = 12;
+//const BCRYPT_SALT_ROUNDS = 12;
+const tokenService = require('../services/token');
+const uuidv4 = require('uuid/v4');
+const userService = require('../services/users');
 
 // Funcones a exportar
 module.exports = {
@@ -21,64 +23,45 @@ module.exports = {
 
   //Funcion que registra un nuevo usuario que a la vez sera un viajero
   singUp:  (req, res, next) => {
+    if(!req.headers.authorization){
+      return res.status(401).send({message : "No tienes Autorización"});
+    }
+    const token = req.headers.authorization.split(' ')[1];    
     const user = req.body;
     user.id_user=uuidv4();
-    bcrypt.hash(user.password, BCRYPT_SALT_ROUNDS) //promesa para encriptar la contraseña
-    .then(hashedPassword => { // success
-      mysqlConnection.query('INSERT INTO usuario VALUES (?,?,?,?,?,?,?,?,?,?,?)',
-      [user.id_user,user.name,user.lastname,user.second_lastname,user.lada,user.number_phone,user.email,hashedPassword,user.card,user.type_card,user.points], (err, rows, fields) => {
-        if(!err){
-            mysqlConnection.query('INSERT INTO viajero VALUES(?,?,?)',[user.viajero,user.total_trips,user.id_user],(err,rows,fields) => {
-              if (!err) {
-                res.status(200).send({
-                  "success" : true,
-                  "message" : "Registro Exitoso",
-                  "token" : service.createToken(user)//creamos el token con el que se identificara al nuevo viajero(usuario)
-                }); 
-              }
-              else{
-                res.status(500).send({
-                  "success" : false,
-                  "message" : "Ups, Servidor no disponible"
-                });  
-              }
+    tokenService.getDataTokenExternal(token)
+     .then(data =>{
+        userService.registerUser(data,user)
+        .then(success => {
+          mysqlConnection.query('INSERT INTO viajero VALUES(?,?,?,?)',[null,0,user.total_trips,user.id_user],(err,rows,fields) => {
+            if (!err) {
+                res.send(success);
+            }
+            else{
+              res.status(500);
+            }
           });
-        }
-        else{
-          res.status(500).send({
-            "success" : false,
-            "message" : "Ups, Servidor no disponible"
-          });
-        }
-      });
-    })
-    .catch(error =>{ //Error
-      res.status(500).send({
-        "success" : false,
-        "message" : "Ups, Hash no disponible",error
-      });
-    });
-
+        })
+        .catch(error =>{
+          res.send(error);
+        })
+      })
+     .catch(error => {
+        res.send(error);
+     })
   },//
 
   //Funcion que proporciona acceso a un viajero previamente registrado --Login--
-  signIn: (req,res)=>{
-    const user = req.body;
-    mysqlConnection.query("SELECT u.*,t.* FROM usuario as u INNER JOIN viajero as t ON u.id_usuario=t.id_usuario WHERE u.email=? ",
-    [user.email],(err, rows)=>{
-        if(!err){
-            if(rows != 0){
-              bcrypt.compare(user.password,rows[0]['password'])
-              .then(password =>{
-                if(password)
-                  return res.status(200).send({success: true,message: "Te has logueado correctamente", token: service.createToken(user)});
-                res.status(403).send({success: false, message: "Contraseña Incorrecta"});
-              })
-              .catch(err =>{
-                res.status(500).send({success: false, message: err});
-              })
-            }else res.status(403).send({message: "Email no se encuatra registrado"})           
-        }else res.status(500).send({success: false,message: err})
+  getData: (req,res)=>{
+    const {id}= req.params;
+    console.log(id);
+    mysqlConnection.query('SELECT u.*, v.* FROM usuario as u INNER JOIN viajero as v ON v.id_usuario=u.id_usuario WHERE u.id_usuario=?',[id], (err, rows, fields) => {
+      if(!err){
+        res.json(rows);
+      }
+      else {
+        console.log(err);
+      }
     });
     
   }//

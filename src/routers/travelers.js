@@ -1,14 +1,14 @@
 const router = require('express-promise-router')();
-const isSignUp = require('../middlewares/user');
 
 const {
   showTraveler,
   singUp,
-  signIn
+  getData
 } = require('../controllers/traveler');
 
-router.get('/',showTraveler);
-router.post('/',isSignUp,singUp);
-router.post('/login',signIn);
+//router.get('/',showTraveler);
+router.post('/',singUp);
+router.get('/:id?',getData);
+//router.post('/login',signIn);
 
 module.exports = router;

@@ -5,7 +5,6 @@ const usersRoutes = require('./routers/user');
 const travelerRoutes = require('./routers/travelers');
 const isAuth = require('./middlewares/auth');
 const travelRoutes = require('./routers/trip');
-const authenticationRoutes = require('./routers/authentication');
 
 
 //CORS (Cross-Origin Resource Sharing) headers to support Cross-site HTTP requests
@@ -31,7 +30,6 @@ app.use(express.json());
 app.use('/users', usersRoutes);
 app.use('/travelers', travelerRoutes);
 app.use('/trip', travelRoutes);
-app.use('/authentication', authenticationRoutes);
 
 /*Ejemplo de como utilizar rutas privas solo accedidas por usuarios registrados
 con tokens*/
