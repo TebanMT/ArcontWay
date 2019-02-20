@@ -4,6 +4,7 @@ const mysqlConnection = require('../connection_db');
 antes de ser registrado*/
 function verifyTraveler(data){
     const verify = new Promise((resolve, reject) =>{
+        console.log("numero: ",data.numero);
         try{
             mysqlConnection.query("SELECT id_usuario,telefono FROM usuario WHERE telefono=?",[data.numero],(err,rows)=>{
                 if(!err){
@@ -27,10 +28,11 @@ function registerUser(data,user) {
             mysqlConnection.query('INSERT INTO usuario VALUES (?,?,?,?,?,?,?,?,?)',
             [user.id_user,user.name,user.lastname,user.second_lastname,data.prefijo_pais,data.numero,user.email,user.password,user.tipo_registro], (err, rows, fields) => {
                 if(!err){
-                    resolve({status: 200,message: "Registro Exitoso", id: user.id_user});
+                    resolve({status: 200,success: true,message: "Registro Exitoso", id: user.id_user});
                 }
                 else{
-                    resolve({status: 500,message: "Error al registrar usuario"}); 
+                    console.log(err);
+                    reject({status: 500,success: false,message: "Error al registrar usuario"}); 
                 }
             });
         }catch(err){

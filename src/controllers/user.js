@@ -23,7 +23,7 @@ module.exports = {
         res.send(responde); 
       })
       .catch(error =>{
-          res.status(error);
+          res.send(error);
       })
      })
      .catch(error => {

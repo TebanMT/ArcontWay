@@ -18,7 +18,6 @@ function generateAppSecretProof(token){
 
 //Funcion para obtener los datos del usuiario registrado por metodos externos (FB ó CORREO)
 function getDataTokenExternal(token){
-
     const decode = new Promise((resolve, reject) =>{
         try {
             const app_secret_proof = generateAppSecretProof(token);
@@ -45,6 +44,12 @@ function getDataTokenExternal(token){
     return decode;
 }
 
+
+
+//------------------------------------------------------------------------------------------//////
+
+/*!!!!!  ESTAS FUNCIONES SE ENCUENTRAN DEPRECIASDAS YA QUE EN LA v1.0(Actual) LOS UDUARIOS NO 
+        PUEDEN ENTRAR POR NINIGUN OTRO METODO QUE EL DE FB O TELEFONO !!!!!!!!!!!!!!!!!! */
 
 /*--- FUNCIONES PARA LOS TOKEN DE LOS USURIOS REGISTRADOS EN EL SISTEMA QUE ¡¡NO!! 
       INICIARON SESION CON LOS METODOS EXTERNOS (FB, NUM CEL, CORREO)*/
